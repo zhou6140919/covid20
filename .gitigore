@@ -1,2 +1,2 @@
-train/*
-val/*
+data/train/*
+data/val/*

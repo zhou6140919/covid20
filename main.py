@@ -1,15 +1,19 @@
 import argparse
-import os
-from torch import optim, nn
-from torchvision import models, transforms, datasets
-import torch
-import time
 import copy
-from data import Xray
+import os
 import ssl
+import time
+import torch
+from torch import optim, nn
+from torchvision import models, transforms
+from tqdm import tqdm
+
+from data import Xray
+
 ssl._create_default_https_context = ssl._create_unverified_context
 parser = argparse.ArgumentParser()
 parser.add_argument('--model', type=str, default='alexnet')
+parser.add_argument('--lr', type=float, default=0.001)
 args = parser.parse_args()
 
 # Top level data directory. Here we assume the format of the directory conforms
@@ -58,7 +62,7 @@ def train_model(model, dataloaders, criterion, optimizer, num_epochs=25, is_ince
             running_corrects = 0
 
             # Iterate over data.
-            for inputs, labels in dataloaders[phase]:
+            for inputs, labels in tqdm(dataloaders[phase], total=len(dataloaders[phase])):
                 inputs = inputs.to(device)
                 labels = labels.to(device)
 
@@ -249,7 +253,7 @@ else:
             print("\t", name)
 
 # Observe that all parameters are being optimized
-optimizer_ft = optim.SGD(params_to_update, lr=0.001, momentum=0.9)
+optimizer_ft = optim.SGD(params_to_update, lr=args.lr, momentum=0.9)
 
 # Setup the loss fxn
 criterion = nn.CrossEntropyLoss()
@@ -261,5 +265,7 @@ model_ft, hist = train_model(model_ft,
                              optimizer_ft,
                              num_epochs=num_epochs,
                              is_inception=(model_name == "inception"))
-torch.save(model_ft.state_dict(), args.model + '.pt')
+NAME = f"{args.model}-{args.lr}"
+torch.save(model_ft.state_dict(), NAME+'.pt')
+print(hist[:, 0])
 

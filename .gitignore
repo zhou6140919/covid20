@@ -1,0 +1,13 @@
+*.pt
+/data/train/
+/data/val/
+/data/more_train/
+/data/more_test/
+/data/more_dev/
+*.zip
+/.idea/
+/images/
+create_dataset.py
+*.docx
+ceshi.py
+__pycache__

@@ -11,7 +11,7 @@ class Xray(data.Dataset):
         n_root = root + '/negative/'
         imgs_p = [os.path.join(p_root, img) for img in os.listdir(p_root)]
         imgs_n = [os.path.join(n_root, img) for img in os.listdir(n_root)]
-        imgs = imgs_p + img_n
+        imgs = imgs_p + imgs_n
         self.imgs = imgs
 
     def __getitem__(self, index):
